@@ -2,32 +2,29 @@ package pro.sky.Examiner.service;
 
 import org.springframework.stereotype.Service;
 import pro.sky.Examiner.domain.Question;
-import pro.sky.Examiner.exception.BadAmount;
+import pro.sky.Examiner.exception.IncorrectAmountOfQuestionsException;
 
 import java.util.*;
 
 @Service
-public class ExaminerServiceImpl implements ExaminerService{
-    private Random random;
-    private QuestionService questionService;
+public class ExaminerServiceImpl implements ExaminerService {
+
+    private final QuestionService questionService;
 
     ExaminerServiceImpl(QuestionService questionService) {
-        this.questionService= questionService;
+        this.questionService = questionService;
     }
+
     @Override
     public Collection<Question> getQuestions(int amount) {
-        int size= questionService.getSize();
-
-        System.out.println(size);
-
-        if (amount>size) {
-            throw new BadAmount("Задано большое число");
+        if (amount > questionService.getAll().size()) {
+            throw new IncorrectAmountOfQuestionsException("IncorrectAmount");
         }
-        Set<Question> generatedQuestions = new HashSet<>();
+        Set<Question> questions = new HashSet<>();
 
-        while (generatedQuestions.size() < amount) {
-            generatedQuestions.add(questionService.getRandomQuestion());
+        while (questions.size() < amount) {
+            questions.add(questionService.getRandomQuestion());
         }
-        return generatedQuestions;
+        return questions;
     }
 }

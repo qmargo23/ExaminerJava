@@ -1,7 +1,6 @@
 package pro.sky.Examiner.controller;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpStatusCodeException;
 import pro.sky.Examiner.domain.Question;
 import pro.sky.Examiner.service.ExaminerService;
 
@@ -16,15 +15,9 @@ public class ExamController {
         this.examinerService = examinerService;
     }
 
-
-    //localhost:8080/exam/get/
-    @GetMapping("/get/{amount}")
-    public Collection<Question> getQuestion(@PathVariable Integer amount) {
+    //              /exam/get?amount=3
+    @GetMapping("/get/{amount:\\d+}")
+    Collection<Question> getQuestions(@PathVariable int amount) {
         return examinerService.getQuestions(amount);
-    }
-
-    @ExceptionHandler({HttpStatusCodeException.class})
-    public String handlerException(Exception e) {
-        return "Code: " + e.getMessage();
     }
 }

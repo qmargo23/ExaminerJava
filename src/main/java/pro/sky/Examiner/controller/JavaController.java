@@ -1,7 +1,6 @@
 package pro.sky.Examiner.controller;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpStatusCodeException;
 import pro.sky.Examiner.domain.Question;
 import pro.sky.Examiner.service.QuestionService;
 
@@ -10,40 +9,29 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/exam/java")
 public class JavaController {
-    @ExceptionHandler({HttpStatusCodeException.class})
-    public String handlerException(Exception e) {
-        return "Code: " + e.getMessage();
-    }
-
     private final QuestionService questionService;
 
     public JavaController(QuestionService questionService) {
         this.questionService = questionService;
     }
 
+    //         /exam/java
     @GetMapping()
     public Collection<Question> getQuestions() {
         return questionService.getAll();
     }
 
-    /**добавлен вопрос
-     *
-     * @param question
-     * @param answer
-     * @return
-     */
+    //         /exam/java/add?question=QuestionText&answer=QuestionAnswer
     @GetMapping("/add")
-    public String addQuestion(@RequestParam String question,
-                              @RequestParam String answer) {
-        //
-        return "Добавлен вопрос и ответ:   " + questionService.add(question, answer);
+    public Question addQuestion(@RequestParam String question,
+                                @RequestParam String answer) {
+        return questionService.add(question, answer);
     }
 
+    //          /exam/java/remove?question=QuestionText&answer=QuestionAnswer
     @GetMapping("/remove")
-    public String removeQuestion(@RequestParam String question,
-                                 @RequestParam String answer) {
-        return "Удален вопрос и ответ:   " + questionService.remove(question, answer);
+    public Question removeQuestion(@RequestParam String question,
+                                   @RequestParam String answer) {
+        return questionService.remove(new Question(question, answer));
     }
-
-
 }
