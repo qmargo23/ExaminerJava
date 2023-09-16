@@ -1,17 +1,20 @@
 package pro.sky.Examiner.service;
 
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pro.sky.Examiner.domain.Question;
 import pro.sky.Examiner.repository.QuestionRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
-public class JavaQuestionService implements QuestionService {
+public class MathQuestionService implements QuestionService {
     private final QuestionRepository questions;
 
-    public JavaQuestionService(@Qualifier("javaQuestionRepository") QuestionRepository questions) {
+    public MathQuestionService(@Qualifier("mathQuestionRepository") QuestionRepository questions) {
         this.questions = questions;
     }
 
@@ -42,5 +45,4 @@ public class JavaQuestionService implements QuestionService {
         return questionsList.get((int) (Math.random() * max));
     }
 }
-
 

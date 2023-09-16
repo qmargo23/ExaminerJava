@@ -15,17 +15,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class JavaQuestionServiceTest {
+public class MathQuestionServiceTest {
     @Mock
     private QuestionRepository questionRepositoryMock;
 
     @InjectMocks
-    private JavaQuestionService out;
+    private MathQuestionService out;
 
     private final Collection<Question> questions = Set.of(
-            new Question("qwe", "ewq"),
-            new Question("asd", "dsa"),
-            new Question("zxc", "cxz")
+            new Question("123", "321"),
+            new Question("234", "432"),
+            new Question("345", "543")
     );
 
     @Test

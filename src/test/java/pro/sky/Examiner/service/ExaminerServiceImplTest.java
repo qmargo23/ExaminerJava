@@ -3,50 +3,79 @@ package pro.sky.Examiner.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.Examiner.domain.Question;
 import pro.sky.Examiner.exception.IncorrectAmountOfQuestionsException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ExaminerServiceImplTest {
+public class ExaminerServiceImplTest {
+    @Mock
+    private QuestionService javaQuestionServiceMock;
 
     @Mock
-    private JavaQuestionService javaQuestionServiceMock;
-    @InjectMocks
-    private ExaminerServiceImpl examinerServiceMock;
+    private QuestionService mathQuestionServiceMock;
 
-    List<Question> testCollection = new ArrayList<>();
+    private ExaminerServiceImpl out;
 
     @BeforeEach
-    void addTestSet() {
-        testCollection.add(new Question("Вопрос6", "ответ6"));
-        testCollection.add(new Question("Вопрос7", "ответ7"));
-        testCollection.add(new Question("Вопрос8", "ответ8"));
-        testCollection.add(new Question("Вопрос9", "ответ9"));
+    public void initOut() {
+        out = new ExaminerServiceImpl(javaQuestionServiceMock, mathQuestionServiceMock);
+    }
+
+    private final Collection<Question> javaQuestions = new HashSet<>(Set.of(
+            new Question("qwe", "ewq"),
+            new Question("asd", "dsa"),
+            new Question("zxc", "cxz")));
+
+    private final Collection<Question> mathQuestions = new HashSet<>(Set.of(
+            new Question("123", "321"),
+            new Question("234", "432"),
+            new Question("345", "543")));
+
+    private final Collection<Question> questions = new HashSet<>(Set.of(
+            new Question("qwe", "ewq"),
+            new Question("asd", "dsa"),
+            new Question("zxc", "cxz"),
+            new Question("123", "321"),
+            new Question("234", "432"),
+            new Question("345", "543")));
+
+    @Test
+    void shouldReturnExceptionWhenAmountIncorrect() {
+        when(mathQuestionServiceMock.getAll()).thenReturn(mathQuestions);
+        when(javaQuestionServiceMock.getAll()).thenReturn(javaQuestions);
+
+        assertThrows(IncorrectAmountOfQuestionsException.class, () -> out.getQuestions(7));
     }
 
     @Test
-    void IncorrectAmountException() {
-        assertEquals("IncorrectAmount", assertThrows(IncorrectAmountOfQuestionsException.class,() -> examinerServiceMock.getQuestions(javaQuestionServiceMock.getAll().size() + 1)).getMessage());
-    }
+    void shouldReturnSetWithAmountQuestions() {
+        when(mathQuestionServiceMock.getAll()).thenReturn(mathQuestions);
+        when(javaQuestionServiceMock.getAll()).thenReturn(javaQuestions);
+        when(javaQuestionServiceMock.getRandomQuestion()).thenReturn(
+                new Question("qwe", "ewq"),
+                new Question("zxc", "cxz"),
+                new Question("zxc", "cxz"),
+                new Question("asd", "dsa"),
+                new Question("qwe", "ewq")
+        );
+        when(mathQuestionServiceMock.getRandomQuestion()).thenReturn(
+                new Question("123", "321"),
+                new Question("345", "543"),
+                new Question("345", "543"),
+                new Question("234", "432"),
+                new Question("123", "321")
+        );
 
-    @Test
-    void getQuestions() {
-        int actualSize = 3;
-        int resultSize = 3;
-        Random random = new Random();
-        Set<Question> setRandomQuestionTest = new HashSet<>();
-        while (setRandomQuestionTest.size() < resultSize) {
-            int r = random.nextInt(testCollection.size());
-            setRandomQuestionTest.add(testCollection.get(r));
-        }
-        assertEquals(actualSize, setRandomQuestionTest.size());
+        assertEquals(questions, out.getQuestions(6));
     }
 }
