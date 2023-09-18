@@ -50,6 +50,8 @@ class ExaminerServiceImplTest {
         //  Question{question='Q2', answer='A2'}
         //whereas expected element was:
         //  Question{question='Q1', answer='A1'}
+
+//Help
     void getRandomQuestions() {
         var qa = Set.of(new Question("Q1", "A1"), new Question("Q2", "A2"), new Question("Q3", "A3"));
         when(javaQuestionService.getAll()).thenReturn(qa);
