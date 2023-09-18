@@ -17,12 +17,18 @@ public class ExaminerServiceImpl implements ExaminerService {
 
     @Override
     public Collection<Question> getQuestions(int amount) {
-        if (amount > questionService.getAll().size()) {
-            throw new IncorrectAmountOfQuestionsException("IncorrectAmount");
+        // чтобы не повторять код
+        // в (amount > allQuestion.size() блоке
+        // и вернуть всю колллекцию при amount == questionService.getAll().size(),
+        Collection<Question> allQuestion = questionService.getAll();
+        if (amount > allQuestion.size()) {
+            throw new IncorrectAmountOfQuestionsException();
         }
-        Set<Question> questions = new HashSet<>();
-
-        while (questions.size() < amount) {
+        if (amount == allQuestion.size()) {
+            return allQuestion;//вернуть сразу всю коллекцию!
+        }
+        Set<Question> questions = new HashSet<>(amount);
+        while (questions.size() != amount) {
             questions.add(questionService.getRandomQuestion());
         }
         return questions;
